@@ -135,11 +135,11 @@ class NetLoss(nn.Module):
     This is so we can more efficiently use DataParallel.
     """
     
-    def __init__(self, net:Yolact, criterion:MultiBoxLoss):
+    def __init__(self, net=Yolact, criterion=MultiBoxLoss):
         super().__init__()
 
-        self.net = net
-        self.criterion = criterion
+        self.net = Yolact
+        self.criterion = MultiBoxLoss
     
     def forward(self, images, targets, masks, num_crowds):
         preds = self.net(images)
@@ -396,7 +396,7 @@ def gradinator(x):
     x.requires_grad = False
     return x
 
-def prepare_data(datum, devices:list=None, allocation:list=None):
+def prepare_data(datum, devices=None, allocation=None):
     with torch.no_grad():
         if devices is None:
             devices = ['cuda:0'] if args.cuda else ['cpu']
@@ -436,7 +436,7 @@ def prepare_data(datum, devices:list=None, allocation:list=None):
 
         return split_images, split_targets, split_masks, split_numcrowds
 
-def no_inf_mean(x:torch.Tensor):
+def no_inf_mean(x=torch.Tensor):
     """
     Computes the mean of a vector, throwing out all inf values.
     If there are no non-inf values, this will return inf (i.e., just the normal mean).
@@ -482,7 +482,7 @@ def compute_validation_loss(net, data_loader, criterion):
         loss_labels = sum([[k, losses[k]] for k in loss_types if k in losses], [])
         print(('Validation ||' + (' %s: %.3f |' * len(losses)) + ')') % tuple(loss_labels), flush=True)
 
-def compute_validation_map(epoch, iteration, yolact_net, dataset, log:Log=None):
+def compute_validation_map(epoch, iteration, yolact_net, dataset, log=None):
     with torch.no_grad():
         yolact_net.eval()
         
