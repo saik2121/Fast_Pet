@@ -139,7 +139,7 @@ class NetLoss(nn.Module):
         super().__init__()
 
         self.net = Yolact()
-        self.criterion = MultiBoxLoss
+        self.criterion = MultiBoxLoss()
     
     def forward(self, images, targets, masks, num_crowds):
         preds = self.net(images)
