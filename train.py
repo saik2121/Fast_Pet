@@ -139,11 +139,11 @@ class NetLoss(nn.Module):
         super().__init__()
 
         self.net = Yolact()
-        self.criterion = MultiBoxLoss()
     
     def forward(self, images, targets, masks, num_crowds):
         preds = self.net(images)
-        losses = self.criterion(self.net, preds, targets, masks, num_crowds)
+        criterion= MultiBoxLoss(self.net, preds, targets, masks, num_crowds)
+        losses = criterion(self.net, preds, targets, masks, num_crowds)
         return losses
 
 class CustomDataParallel(nn.DataParallel):
