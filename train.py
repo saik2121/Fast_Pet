@@ -135,15 +135,16 @@ class NetLoss(nn.Module):
     This is so we can more efficiently use DataParallel.
     """
     
-    def __init__(self, net=Yolact, criterion=MultiBoxLoss):
+    
+    def __init__(self, net:Yolact, criterion:MultiBoxLoss):
         super().__init__()
 
-        self.net = Yolact()
+        self.net = net
+        self.criterion = criterion
     
     def forward(self, images, targets, masks, num_crowds):
         preds = self.net(images)
-        criterion= MultiBoxLoss(self.net, preds, targets, masks, num_crowds)
-        losses = criterion(self.net, preds, targets, masks, num_crowds)
+        losses = self.criterion(self.net, preds, targets, masks, num_crowds)
         return losses
 
 class CustomDataParallel(nn.DataParallel):
